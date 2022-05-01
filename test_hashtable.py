@@ -2,6 +2,7 @@ import pytest
 
 from hashtable import HashTable
 
+
 @pytest.fixture
 def hash_table():
     sample_data = HashTable(size=100)
@@ -20,7 +21,7 @@ def test_should_return_size():
 
 
 def test_should_create_empty_value_slots():
-    assert HashTable(size=3).pairs == [None, None, None]
+    assert HashTable(size=3)._pairs == [None, None, None]
 
 
 def test_should_insert_key_value_pairs():
@@ -46,7 +47,7 @@ def test_should_not_create_none_value_when_created():
 def test_should_insert_none_value():
     hash_table = HashTable(size=100)
     hash_table['key'] = None
-    assert None in hash_table.pairs
+    assert ('key', None) in hash_table.pairs
 
 
 def test_should_find_value_by_key(hash_table):
@@ -70,15 +71,19 @@ def test_should_find_key(hash_table):
 def test_should_not_find_key(hash_table):
     assert 'missing_key' not in hash_table
 
+
 # implementing the equivalent of dict's get method
 def test_should_get_value(hash_table):
     assert hash_table.get('hola') == 'hello'
 
+
 def test_should_get_none_when_missing_key(hash_table):
     assert hash_table.get('missing_key') is None
 
+
 def test_should_get_default_value_when_missing_key(hash_table):
     assert hash_table.get('missing_key', 'default') == 'default'
+
 
 def test_should_get_value_with_default(hash_table):
     assert hash_table.get('hola', 'default') == 'hello'
@@ -113,3 +118,11 @@ def test_should_update_existing_value(hash_table):
     assert hash_table[24.9] == 43
     assert hash_table[False] == True
     assert len(hash_table) == 100
+
+
+def test_should_return_copy_of_pairs(hash_table):
+    assert hash_table.pairs is not hash_table.pairs
+
+
+def test_should_not_include_blank_pairs(hash_table):
+    assert None not in hash_table.pairs

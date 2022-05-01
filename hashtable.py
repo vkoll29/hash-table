@@ -6,17 +6,12 @@ class Pair(NamedTuple):
     value: Any
 
 class HashTable:
-
-    def _index(self, key):
-        return hash(key) % len(self)
-
-
     def __init__(self, size):
-        self.pairs = size * [None]
+        self._pairs = size * [None]
 
 
     def __len__(self):
-        return len(self.pairs)
+        return len(self._pairs)
 
 
     def __setitem__(self, key, value):
@@ -24,7 +19,7 @@ class HashTable:
         - turn an arbitrary key into a numeric hash which acts as the index.
         - then use the modulo operator to limit the resulting index within the available address space
         """
-        self.pairs[self._index(key)] = Pair(key, value)
+        self._pairs[self._index(key)] = Pair(key, value)
 
 
     def __getitem__(self, key):
@@ -33,7 +28,7 @@ class HashTable:
         - if nothing is found, raise KeyError
         - else return the tuple's second element
         """
-        pair = self.pairs[self._index(key)]
+        pair = self._pairs[self._index(key)]
         if pair is None:
             raise KeyError(key)
         return pair.value
@@ -53,6 +48,19 @@ class HashTable:
             return True
 
 
+    def __delitem__(self, key):
+        """
+        after refactoring the index method as shown in the commented code,
+        it turns out that deleting an item is simply assigning BLANK to the _index
+        so assign with the brackets syntax which will delegate it to __setitem__ method
+        """
+        # self.values[self._index(key)] = BLANK
+        if key in self:
+            self._pairs[self._index(key)] = None
+        else:
+            raise KeyError(key)
+
+
     def get(self, key, default=None):
         """
         - get the value at key
@@ -64,14 +72,10 @@ class HashTable:
             return default
 
 
-    def __delitem__(self, key):
-        """
-        after refactoring the index method as shown in the commented code,
-        it turns out that deleting an item is simply assigning BLANK to the _index
-        so assign with the brackets syntax which will delegate it to __setitem__ method
-        """
-        # self.values[self._index(key)] = BLANK
-        if key in self:
-            self.pairs[self._index(key)] = None
-        else:
-            raise KeyError(key)
+    @property
+    def pairs(self):
+        return [pair for pair in self._pairs if pair is not None]
+
+
+    def _index(self, key):
+        return hash(key) % len(self)

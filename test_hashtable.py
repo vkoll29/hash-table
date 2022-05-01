@@ -1,4 +1,5 @@
 import pytest
+from pytest_unordered import unordered
 
 from hashtable import HashTable
 
@@ -39,9 +40,8 @@ def test_should_insert_key_value_pairs():
 
 
 def test_should_not_create_none_value_when_created():
-    hash_table = HashTable(size=100)
-    values = [pair.value for pair in hash_table.pairs if pair]
-    assert None not in values
+    # values = [pair.value for pair in hash_table.pairs if pair]
+    assert None not in HashTable(size=100).values
 
 
 def test_should_insert_none_value():
@@ -126,3 +126,36 @@ def test_should_return_copy_of_pairs(hash_table):
 
 def test_should_not_include_blank_pairs(hash_table):
     assert None not in hash_table.pairs
+
+
+def test_should_return_duplicate_values():
+    hash_table = HashTable(size=100)
+    hash_table['key1'] = 21
+    hash_table['key2'] = 43
+    hash_table['key3'] = 43
+
+    assert [21, 43, 43] == sorted(hash_table.values)
+
+
+def test_should_get_values(hash_table):
+    assert unordered(hash_table.values) == ['hello', 43, True]
+
+
+def test_should_get_values_of_empty_list():
+    assert HashTable(size=100).values == []
+
+
+def test_should_return_copy_of_values(hash_table):
+    assert hash_table.values is not hash_table.values
+
+
+def test_should_get_keys(hash_table):
+    assert hash_table.keys == {'hola', 24.9, False}
+
+
+def test_should_get_keys_of_empty_hash_table():
+    assert HashTable(size=100).keys == set()
+
+
+def test_should_return_copy_of_keys(hash_table):
+    assert hash_table.keys is not hash_table.keys

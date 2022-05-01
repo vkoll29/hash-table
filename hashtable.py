@@ -2,19 +2,25 @@ BLANK = object()
 
 
 class HashTable:
+
+    def _index(self, key):
+        return hash(key) % len(self)
+
+
     def __init__(self, size):
         self.values = size * [BLANK]
 
+
     def __len__(self):
         return len(self.values)
+
 
     def __setitem__(self, key, value):
         """
         - turn an arbitrary key into a numeric hash which acts as the index.
         - then use the modulo operator to limit the resulting index within the available address space
         """
-        index = hash(key) % len(self)
-        self.values[index] = value
+        self.values[self._index(key)] = value
 
 
     def __getitem__(self, key):
@@ -25,8 +31,7 @@ class HashTable:
         - use is operator instead of == to compare identities not values
         return value
         """
-        index = hash(key) % len(self)
-        value = self.values[index]
+        value = self.values[self._index(key)]
         if value is BLANK:
             raise KeyError(key)
         return value
@@ -55,3 +60,16 @@ class HashTable:
             return self[key]
         except KeyError:
             return default
+
+
+    def __delitem__(self, key):
+        """
+        after refactoring the index method as shown in the commented code,
+        it turns out that deleting an item is simply assigning BLANK to the _index
+        so assign with the brackets syntax which will delegate it to __setitem__ method
+        """
+        # self.values[self._index(key)] = BLANK
+        if key in self:
+            self[key] = BLANK
+        else:
+            raise KeyError(key)

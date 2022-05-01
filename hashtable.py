@@ -1,5 +1,9 @@
-BLANK = object()
+# BLANK = object()
+from typing import NamedTuple, Any
 
+class Pair(NamedTuple):
+    key: Any
+    value: Any
 
 class HashTable:
 
@@ -8,11 +12,11 @@ class HashTable:
 
 
     def __init__(self, size):
-        self.values = size * [BLANK]
+        self.pairs = size * [None]
 
 
     def __len__(self):
-        return len(self.values)
+        return len(self.pairs)
 
 
     def __setitem__(self, key, value):
@@ -20,21 +24,19 @@ class HashTable:
         - turn an arbitrary key into a numeric hash which acts as the index.
         - then use the modulo operator to limit the resulting index within the available address space
         """
-        self.values[self._index(key)] = value
+        self.pairs[self._index(key)] = Pair(key, value)
 
 
     def __getitem__(self, key):
         """
-        - get the hash value of the key which is its index
-        - access the value at that index
-        - check that the value is not BLANK object i.e has not been set. this means it does not have a key
-        - use is operator instead of == to compare identities not values
-        return value
+        - find pair at index
+        - if nothing is found, raise KeyError
+        - else return the tuple's second element
         """
-        value = self.values[self._index(key)]
-        if value is BLANK:
+        pair = self.pairs[self._index(key)]
+        if pair is None:
             raise KeyError(key)
-        return value
+        return pair.value
 
 
     def __contains__(self, key):
@@ -70,6 +72,6 @@ class HashTable:
         """
         # self.values[self._index(key)] = BLANK
         if key in self:
-            self[key] = BLANK
+            self.pairs[self._index(key)] = None
         else:
             raise KeyError(key)

@@ -7,7 +7,7 @@ def distribute(items, num_containers, hash_function=hash):
 def plot(histrogram):
     for key in sorted(histrogram):
         count = histrogram[key]
-        padding = (max(histrogram.values()) - count) * " "
+        padding = (max(histrogram.pairs()) - count) * " "
         print(f"{key:3} {'■' * count}{padding} ({count})")
 
 def hash_f2(text):

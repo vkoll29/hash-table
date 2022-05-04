@@ -11,7 +11,7 @@ class HashTable:
 
 
     def __len__(self):
-        return len(self._pairs)
+        return len(self.pairs)
 
 
     def __setitem__(self, key, value):
@@ -74,7 +74,7 @@ class HashTable:
 
     @property
     def pairs(self):
-        return [pair for pair in self._pairs if pair is not None]
+        return {pair for pair in self._pairs if pair is not None}
 
     @property
     def values(self):
@@ -86,4 +86,4 @@ class HashTable:
 
 
     def _index(self, key):
-        return hash(key) % len(self)
+        return hash(key) % len(self._pairs)

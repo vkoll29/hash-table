@@ -63,6 +63,10 @@ class HashTable:
             raise KeyError(key)
 
 
+    def __iter__(self):
+        yield from self.keys
+
+
     def get(self, key, default=None):
         """
         - get the value at key

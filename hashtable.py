@@ -7,7 +7,9 @@ class Pair(NamedTuple):
 
 class HashTable:
     def __init__(self, size):
-        self._pairs = size * [None]
+        if size < 1:
+            raise ValueError('Hashtable cannot have a size less than 1')
+        self._slots = size * [None]
 
 
     def __len__(self):
@@ -19,7 +21,7 @@ class HashTable:
         - turn an arbitrary key into a numeric hash which acts as the index.
         - then use the modulo operator to limit the resulting index within the available address space
         """
-        self._pairs[self._index(key)] = Pair(key, value)
+        self._slots[self._index(key)] = Pair(key, value)
 
 
     def __getitem__(self, key):
@@ -28,7 +30,7 @@ class HashTable:
         - if nothing is found, raise KeyError
         - else return the tuple's second element
         """
-        pair = self._pairs[self._index(key)]
+        pair = self._slots[self._index(key)]
         if pair is None:
             raise KeyError(key)
         return pair.value
@@ -56,7 +58,7 @@ class HashTable:
         """
         # self.values[self._index(key)] = BLANK
         if key in self:
-            self._pairs[self._index(key)] = None
+            self._slots[self._index(key)] = None
         else:
             raise KeyError(key)
 
@@ -74,7 +76,7 @@ class HashTable:
 
     @property
     def pairs(self):
-        return {pair for pair in self._pairs if pair is not None}
+        return {pair for pair in self._slots if pair is not None}
 
     @property
     def values(self):
@@ -84,6 +86,10 @@ class HashTable:
     def keys(self):
         return set(pair.key for pair in self.pairs)
 
+    @property
+    def size(self):
+        return len(self._slots)
+
 
     def _index(self, key):
-        return hash(key) % len(self._pairs)
+        return hash(key) % self.size

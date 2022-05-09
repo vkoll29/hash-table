@@ -21,12 +21,12 @@ def test_should_report_length_of_empty_hashtable(hash_table):
     assert len(HashTable(size=100)) == 0
 
 
-# def test_should_report_length_of_empty_size():
-#     assert len(HashTable(size=100)) == 100
+def test_should_report_length_of_nonempty_hashtable(hash_table):
+    assert len(hash_table) == 3
 
 
-def test_should_create_empty_value_slots():
-    assert HashTable(size=3)._pairs == [None, None, None]
+def test_should_create_empty_pair_slots():
+    assert HashTable(size=3)._slots == [None, None, None]
 
 
 def test_should_insert_key_value_pairs():
@@ -183,3 +183,24 @@ def test_should_convert_to_dict(hash_table):
     assert set(dictionary.keys()) == hash_table.keys
     assert set(dictionary.items()) == hash_table.pairs
     assert list(dictionary.values()) == unordered(hash_table.values)
+
+
+def test_should_not_create_a_hashtable_with_zero_capacity():
+    with pytest.raises(ValueError):
+        HashTable(size=0)
+
+
+def test_should_not_create_a_hashtable_with_negative_capacity():
+    with pytest.raises(ValueError):
+        HashTable(size=-100)
+
+
+def test_should_report_size_of_empty_hashtable():
+    assert HashTable(size=100).size == 100
+
+
+def test_should_report_size(hash_table):
+    assert hash_table.size == 100
+
+
+
